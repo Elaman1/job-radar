@@ -84,6 +84,9 @@ func main() {
 
 	fmt.Println("status:", resp.StatusCode)
 	fmt.Println(string(body))
+	fmt.Println("endpoint:", endpoint)
+	fmt.Println("authorization:", req.Header.Get("Authorization"))
+	fmt.Println("referer:", req.Header.Get("Referer"))
 
 	//conf, err := config.InitConf()
 	//if err != nil {
