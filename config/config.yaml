@@ -1,0 +1,28 @@
+app:
+  service_name: "job radar"
+
+server:
+  address: ":8081"
+  read_timeout: 10s
+  write_timeout: 10s
+
+logger:
+  level: debug # debug, ...
+  env: local # local, test, prod
+
+postgres:
+  host: localhost
+  port: 5433
+  user: postgres
+  password: postgres
+  database: jobs_radar
+  max_conns: 25
+  min_conns: 5
+  max_conn_life_time: 3600 # 1 hour
+  max_conn_idle_time: 1800 # 30 min
+  sslmode: disable
+
+sources:
+  adzuna:
+    app_id: 3c8a6c75
+    app_key: e1c050eb5cb4637a850a56a93e3b5c88
