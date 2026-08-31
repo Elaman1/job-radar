@@ -46,12 +46,17 @@ type Postgres struct {
 }
 
 type Sources struct {
-	Adzuna Adzuna `yaml:"adzuna"`
+	Adzuna    Adzuna    `yaml:"adzuna"`
+	CareerJet CareerJet `yaml:"careerjet"`
 }
 
 type Adzuna struct {
 	AppId  string `yaml:"app_id"`
 	AppKey string `yaml:"app_key"`
+}
+
+type CareerJet struct {
+	APIKey string `yaml:"api_key"`
 }
 
 func InitConf() (*Config, error) {

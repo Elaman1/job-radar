@@ -26,3 +26,6 @@ sources:
   adzuna:
     app_id: 3c8a6c75
     app_key: e1c050eb5cb4637a850a56a93e3b5c88
+
+  careerjet:
+    api_key: ecf7326dcb0221bd42d91e218f614f6e

@@ -48,10 +48,25 @@ func (h *CheckerHandler) CheckerHandler(c *gin.Context) {
 	//u.RawQuery = query.Encode()
 
 	u, err := url.Parse("https://search.api.careerjet.net/v4/query")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("error while parsing url: %s", err.Error()),
+		})
+		return
+	}
 
 	query := u.Query()
 
+	query.Set("locale_code", "en_GB")
 	query.Set("keywords", "golang")
+	query.Set("page", "1")
+	query.Set("page_size", "100")
+	query.Set("sort", "date")
+
+	query.Set("user_ip", "USER_IP")
+	query.Set("user_agent", "Mozilla/5.0")
+
+	u.RawQuery = query.Encode()
 
 	request, err := http.NewRequestWithContext(
 		ctx,
@@ -67,6 +82,9 @@ func (h *CheckerHandler) CheckerHandler(c *gin.Context) {
 		})
 		return
 	}
+
+	request.SetBasicAuth(h.cfg.Sources.CareerJet.APIKey, "")
+	request.Header.Set("Referer", "https://job-radar-2u8b.onrender.com/")
 
 	response, err := client.Do(request)
 	if err != nil {
