@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 )
 
@@ -82,11 +84,30 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("status:", resp.StatusCode)
-	fmt.Println(string(body))
-	fmt.Println("endpoint:", endpoint)
-	fmt.Println("authorization:", req.Header.Get("Authorization"))
-	fmt.Println("referer:", req.Header.Get("Referer"))
+	var result CareerjetResponse
+
+	if errUnmarshal := json.Unmarshal(body, &result); errUnmarshal != nil {
+		panic(errUnmarshal)
+	}
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "10000"
+	}
+
+	http.HandleFunc("/jobs", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		_, err := w.Write(result.Jobs)
+		if err != nil {
+			fmt.Println(err)
+		}
+	})
+
+	err = http.ListenAndServe("0.0.0.0:"+port, nil)
+	if err != nil {
+		panic(err)
+	}
 
 	//conf, err := config.InitConf()
 	//if err != nil {
@@ -142,6 +163,10 @@ func main() {
 	//}
 	//
 	//fmt.Println("server shutdown")
+}
+
+type CareerjetResponse struct {
+	Jobs json.RawMessage `json:"jobs"`
 }
 
 func getPublicIP() (string, error) {
