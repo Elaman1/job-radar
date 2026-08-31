@@ -28,6 +28,13 @@ import (
 func main() {
 	apiKey := "ecf7326dcb0221bd42d91e218f614f6e"
 
+	userIP, err := getPublicIP()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("public ip:", userIP)
+
 	params := url.Values{}
 
 	params.Set("locale_code", "en_GB")
@@ -36,7 +43,7 @@ func main() {
 	params.Set("page_size", "100")
 	params.Set("sort", "date")
 
-	params.Set("user_ip", "USER_IP")
+	params.Set("user_ip", userIP)
 	params.Set("user_agent", "Mozilla/5.0")
 
 	endpoint := "https://search.api.careerjet.net/v4/query?" + params.Encode()
@@ -57,7 +64,7 @@ func main() {
 
 	req.Header.Set(
 		"Referer",
-		"https://your-job-radar-site.com/jobs",
+		"https://job-radar-2u8b.onrender.com/",
 	)
 
 	client := &http.Client{
@@ -132,4 +139,19 @@ func main() {
 	//}
 	//
 	//fmt.Println("server shutdown")
+}
+
+func getPublicIP() (string, error) {
+	resp, err := http.Get("https://api.ipify.org")
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(body), nil
 }
